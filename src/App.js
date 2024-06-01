@@ -1,13 +1,25 @@
+import React, { useState } from "react";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 import logo from "./logo.svg";
 import "./App.css";
+import "./components/LoginForm";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header"></header>
-      <div>
-        <h1 className="text-2xl text-red-500">Hello, Test</h1>
-      </div>
+      <header>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header>
     </div>
   );
 }
