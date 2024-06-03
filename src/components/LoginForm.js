@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { useSignIn } from "@clerk/clerk-react";
+import { useSignIn, useSignUp } from "@clerk/clerk-react";
 import { useNavigate, Link } from "react-router-dom";
 
 const LoginForm = () => {
   const { signIn } = useSignIn();
+  const { signUp } = useSignUp();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [switchToMagicLink, setSwitchToMagicLink] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -24,7 +26,7 @@ const LoginForm = () => {
     return formErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
 
@@ -34,7 +36,7 @@ const LoginForm = () => {
           identifier: username,
           password,
         });
-        navigate("/signed-in");
+        window.location.reload(); // Reload the page after successful login
       } catch (error) {
         setErrors({
           form: error.errors
@@ -47,57 +49,178 @@ const LoginForm = () => {
     }
   };
 
-  if (switchToMagicLink) {
-    return (
-      <div>
-        <p>Magic link method selected. Implement magic link login here.</p>
-        <button onClick={() => setSwitchToMagicLink(false)}>
-          Switch back to Username/Password
-        </button>
-      </div>
-    );
-  }
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+
+    if (Object.keys(formErrors).length === 0) {
+      try {
+        await signUp.create({
+          emailAddress: email,
+          password,
+        });
+        await signUp.prepareEmailAddressVerification();
+        window.location.reload(); // Reload the page after successful registration
+      } catch (error) {
+        setErrors({
+          form: error.errors
+            ? error.errors[0].message
+            : "Error during registration",
+        });
+      }
+    } else {
+      setErrors(formErrors);
+    }
+  };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {errors.username && (
-            <span style={{ color: "red" }}>{errors.username}</span>
-          )}
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errors.password && (
-            <span style={{ color: "red" }}>{errors.password}</span>
-          )}
-        </div>
-        <div>
-          <button type="submit">Login</button>
-        </div>
-        {errors.form && <span style={{ color: "red" }}>{errors.form}</span>}
-      </form>
-      <div>
-        <Link to="/forgot-password">Forgot Password?</Link>
-      </div>
-      <div>
-        <button onClick={() => setSwitchToMagicLink(true)}>
-          Switch to Magic Link
-        </button>
-      </div>
+    <div className="max-w-md mx-auto mt-8 px-4 py-6 bg-white shadow-md rounded-md">
+      {!isRegistering ? (
+        <>
+          <h2 className="text-2xl font-semibold mb-4">Login</h2>
+          <form onSubmit={handleLoginSubmit}>
+            <div className="mb-4">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username:
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+                  errors.username ? "border-red-500" : ""
+                }`}
+              />
+              {errors.username && (
+                <p className="text-sm text-red-500 mt-1">{errors.username}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password:
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+                  errors.password ? "border-red-500" : ""
+                }`}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Login
+            </button>
+          </form>
+          <div className="mt-2">
+            <Link to="/forgot-password" className="text-sm text-blue-500">
+              Forgot Password?
+            </Link>
+          </div>
+          <div className="mt-2">
+            <button
+              onClick={() => setIsRegistering(true)}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+            >
+              No account? Register now
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <h2 className="text-2xl font-semibold mb-4">Register</h2>
+          <form onSubmit={handleSignUpSubmit}>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email:
+              </label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+                  errors.email ? "border-red-500" : ""
+                }`}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username:
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+                  errors.username ? "border-red-500" : ""
+                }`}
+              />
+              {errors.username && (
+                <p className="text-sm text-red-500 mt-1">{errors.username}</p>
+              )}
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password:
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+                  errors.password ? "border-red-500" : ""
+                }`}
+              />
+              {errors.password && (
+                <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Register
+            </button>
+          </form>
+          <div className="mt-2">
+            <button
+              onClick={() => setIsRegistering(false)}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+            >
+              Back to Login
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
