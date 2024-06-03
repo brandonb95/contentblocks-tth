@@ -10,18 +10,17 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <header>
+        <main>
           <SignedOut>
             <LoginForm />
           </SignedOut>
           <SignedIn>
             <UserButton />
+            <Routes>
+              <Route path="/signed-in" element={<SignedInPage />} />
+            </Routes>
           </SignedIn>
-        </header>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/signed-in" element={<SignedInPage />} />
-        </Routes>
+        </main>
       </div>
     </Router>
   );

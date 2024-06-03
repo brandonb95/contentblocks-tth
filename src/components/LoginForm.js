@@ -30,16 +30,13 @@ const LoginForm = () => {
 
     if (Object.keys(formErrors).length === 0) {
       try {
-        console.log("Attempting sign in with:", username, password);
-        const response = await signIn.create({
+        await signIn.create({
           identifier: username,
           password,
         });
-        console.log("Sign in response:", response);
-        // Redirect to the signed-in page
-        navigate("/signed-in");
+        // Refresh the page upon successful login
+        window.location.reload();
       } catch (error) {
-        console.error("Sign in error:", error);
         setErrors({
           form: error.errors
             ? error.errors[0].message
@@ -54,7 +51,6 @@ const LoginForm = () => {
   if (switchToMagicLink) {
     return (
       <div>
-        {/* Implement the magic link method here */}
         <p>Magic link method selected. Implement magic link login here.</p>
         <button onClick={() => setSwitchToMagicLink(false)}>
           Switch back to Username/Password

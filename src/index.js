@@ -5,7 +5,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ClerkProvider } from "@clerk/clerk-react";
 
-// Import your publishable key
 const PUBLISHABLE_KEY = process.env.REACT_APP_CLERK_FRONTEND_API;
 console.log("Publishable Key:", PUBLISHABLE_KEY);
 
