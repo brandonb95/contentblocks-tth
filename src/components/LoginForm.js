@@ -1,47 +1,71 @@
 import React, { useState } from "react";
-import { useClerk } from "@clerk/clerk-react";
+import { useSignIn } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({ onSwitchMethod }) => {
-  const { client } = useClerk();
+const LoginForm = () => {
+  const { signIn } = useSignIn();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
+  const [switchToMagicLink, setSwitchToMagicLink] = useState(false);
+  const navigate = useNavigate();
 
-  //   Check if the field is empty or not
   const validateForm = () => {
-    const errors = {};
-    if (!username) errors.username = "Username is required.";
-    if (!password) errors.password = "Password is required.";
-    return errors;
+    let formErrors = {};
+
+    if (!username) {
+      formErrors.username = "Username is required";
+    }
+
+    if (!password) {
+      formErrors.password = "Password is required";
+    }
+
+    return formErrors;
   };
 
-  //   Event Handler for submission
   const handleSubmit = async (e) => {
-    // Prevent the form from defaulting to original behaviour
     e.preventDefault();
     const formErrors = validateForm();
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
 
-    try {
-      await client.signIn.create({
-        identifier: username,
-        password: password,
-      });
-      setMessage("Login successful!");
-    } catch (error) {
-      setErrors({ form: "Invalid username or password" });
+    if (Object.keys(formErrors).length === 0) {
+      try {
+        console.log("Attempting sign in with:", username, password);
+        const response = await signIn.create({
+          identifier: username,
+          password,
+        });
+        console.log("Sign in response:", response);
+        // Redirect to the signed-in page
+        navigate("/signed-in");
+      } catch (error) {
+        console.error("Sign in error:", error);
+        setErrors({
+          form: error.errors
+            ? error.errors[0].message
+            : "Invalid username or password",
+        });
+      }
+    } else {
+      setErrors(formErrors);
     }
   };
 
+  if (switchToMagicLink) {
+    return (
+      <div>
+        {/* Implement the magic link method here */}
+        <p>Magic link method selected. Implement magic link login here.</p>
+        <button onClick={() => setSwitchToMagicLink(false)}>
+          Switch back to Username/Password
+        </button>
+      </div>
+    );
+  }
+
   return (
-    <div className="login-form">
-      <h2>Login</h2>
+    <div>
       <form onSubmit={handleSubmit}>
-        {errors.form && <div className="error">{errors.form}</div>}
         <div>
           <label htmlFor="username">Username:</label>
           <input
@@ -50,7 +74,9 @@ const LoginForm = ({ onSwitchMethod }) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          {errors.username && <div className="error">{errors.username}</div>}
+          {errors.username && (
+            <span style={{ color: "red" }}>{errors.username}</span>
+          )}
         </div>
         <div>
           <label htmlFor="password">Password:</label>
@@ -60,15 +86,30 @@ const LoginForm = ({ onSwitchMethod }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {errors.password && <div className="error">{errors.password}</div>}
+          {errors.password && (
+            <span style={{ color: "red" }}>{errors.password}</span>
+          )}
         </div>
-        <button type="submit">Login</button>
+        <div>
+          <button type="submit">Login</button>
+        </div>
+        {errors.form && <span style={{ color: "red" }}>{errors.form}</span>}
       </form>
-      <div className="links">
-        <a href="/forgot-password">Forgot Password?</a>
-        <button onClick={onSwitchMethod}>Use Magic Link</button>
+      <div>
+        <a
+          href="#"
+          onClick={() => {
+            /* Implement forgot password logic here */
+          }}
+        >
+          Forgot Password?
+        </a>
       </div>
-      {message && <p>{message}</p>}
+      <div>
+        <button onClick={() => setSwitchToMagicLink(true)}>
+          Switch to Magic Link
+        </button>
+      </div>
     </div>
   );
 };
