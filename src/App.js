@@ -9,6 +9,7 @@ import {
 import LoginForm from "./components/LoginForm";
 import ForgotPasswordPage from "./components/ForgotPasswordPage";
 import SignedInPage from "./components/SignedInPage";
+import MagicLinkCallback from "./components/MagicLinkCallback";
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           </SignedIn>
         </header>
         <Routes>
+          <Route path="/magic-link-callback" element={<MagicLinkCallback />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/signed-in" element={<SignedInPage />} />
         </Routes>
