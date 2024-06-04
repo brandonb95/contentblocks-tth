@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useClerk } from "@clerk/clerk-react";
-import { atom } from "jotai";
 
 const RegistrationForm = () => {
   const { client } = useClerk();
@@ -8,6 +7,27 @@ const RegistrationForm = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
+  const [passwordStrength, setPasswordStrength] = useState("");
+
+  const validateEmail = (email) => {
+    const re = /\S+@\S+\.\S+/;
+    return re.test(email);
+  };
+
+  const validatePasswordStrength = (password) => {
+    let strength = "Weak";
+    if (password.length > 7) {
+      strength = "Medium";
+    }
+    if (
+      password.length > 7 &&
+      /[A-Z]/.test(password) &&
+      /[0-9]/.test(password)
+    ) {
+      strength = "Strong";
+    }
+    setPasswordStrength(strength);
+  };
 
   const validateForm = () => {
     let formErrors = {};
@@ -18,10 +38,14 @@ const RegistrationForm = () => {
 
     if (!password) {
       formErrors.password = "Password is required";
+    } else {
+      validatePasswordStrength(password);
     }
 
     if (!email) {
       formErrors.email = "Email is required";
+    } else if (!validateEmail(email)) {
+      formErrors.email = "Email is not valid";
     }
 
     return formErrors;
@@ -33,24 +57,20 @@ const RegistrationForm = () => {
 
     if (Object.keys(formErrors).length === 0) {
       try {
-        // Step 1: Initiate sign-up process
         const signUp = await client.signUp.create({ emailAddress: email });
-
-        // Step 2: Prepare verification
-
-        // Step 3: Attempt to complete verification
         await signUp.attemptCompletion({ username, password });
-
-        // If verification is successful, set active session
         await client.setSession(signUp.createdSessionId);
-
-        window.location.reload(); // Reload the page after successful registration
+        window.location.reload();
       } catch (error) {
-        setErrors({
-          form: error.errors
-            ? error.errors[0].message
-            : "Error during registration",
-        });
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          setErrors({ form: message });
+        } else {
+          console.error(error);
+          setErrors({
+            form: "An unexpected error occurred during registration.",
+          });
+        }
       }
     } else {
       setErrors(formErrors);
@@ -73,7 +93,7 @@ const RegistrationForm = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.email ? "border-red-500" : ""
             }`}
           />
@@ -82,7 +102,6 @@ const RegistrationForm = () => {
           )}
         </div>
 
-        {/* Username field */}
         <div className="mb-4">
           <label
             htmlFor="username"
@@ -95,7 +114,7 @@ const RegistrationForm = () => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.username ? "border-red-500" : ""
             }`}
           />
@@ -104,7 +123,6 @@ const RegistrationForm = () => {
           )}
         </div>
 
-        {/* Password field */}
         <div className="mb-4">
           <label
             htmlFor="password"
@@ -116,17 +134,36 @@ const RegistrationForm = () => {
             type="password"
             id="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
+            onChange={(e) => {
+              setPassword(e.target.value);
+              validatePasswordStrength(e.target.value);
+            }}
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.password ? "border-red-500" : ""
             }`}
           />
           {errors.password && (
             <p className="text-sm text-red-500 mt-1">{errors.password}</p>
           )}
+          {password && (
+            <p
+              className={`text-sm mt-1 ${
+                passwordStrength === "Strong"
+                  ? "text-green-500"
+                  : passwordStrength === "Medium"
+                  ? "text-yellow-500"
+                  : "text-red-500"
+              }`}
+            >
+              Password strength: {passwordStrength}
+            </p>
+          )}
         </div>
 
-        {/* Submit button */}
+        {errors.form && (
+          <p className="text-sm text-red-500 mt-1">{errors.form}</p>
+        )}
+
         <button
           type="submit"
           className="w-full py-2 px-4 border border-black rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0)] text-sm font-medium text-white bg-purple-600 hover:shadow-[2px_2px_0px_0px_rgba(255,220,0,1)]"

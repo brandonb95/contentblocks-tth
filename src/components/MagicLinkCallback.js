@@ -55,7 +55,7 @@ const MagicLinkCallback = () => {
 
   return (
     <div style={{ margin: "auto", maxWidth: "500px" }}>
-      <h1>Set New Password</h1>
+      {/* <h1>Set New Password</h1>
       <form onSubmit={handleSubmit}>
         <label htmlFor="newPassword">New Password</label>
         <input
@@ -65,7 +65,7 @@ const MagicLinkCallback = () => {
         />
         <button type="submit">Set Password</button>
         {error && <p style={{ color: "red" }}>{error}</p>}
-      </form>
+      </form> */}
     </div>
   );
 };
