@@ -6,12 +6,13 @@ const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
   const [successfulCreation, setSuccessfulCreation] = useState(false);
   const [error, setError] = useState("");
-  const redirectUrl = "http://localhost:3000/magic-link-callback"; // Replace with your actual redirect URL
+  const redirectUrl = "http://localhost:3000/magic-link-callback"; // Link back to profile once email is verified
 
   if (!isLoaded) {
     return null;
   }
 
+  // Verify that the email exists to send link to
   const create = async (e) => {
     e.preventDefault();
     try {

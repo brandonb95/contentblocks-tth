@@ -68,3 +68,9 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### Approach & Challenges
+
+For this project brief, I attempted to prioritize function over form, as the scope of this entire project was something I have previously been unfamiliar with (working within the Clerk environment). I began by instating the login functionality as it was the most important, then created the "Forgot Password" magic link function. Learning the ins and outs of Clerk was challenging, especially as I was developing in the React environment and not in Next.js. I found it difficult to implement some functions, and struggled to find several solutions within the documentation. I am missing only 2 requirements (part of the registration and the password hashing). I continuously ran into Error 422 for both requirements and began to move to other parts of the brief. As the deadline passes, I am going to continue to try to figure out the dreaded error message and how to resolve it.
+
+I initially created the ability to change the password within the form, but opted to leave that out for the sake of this project. The design was the most enjoyable, creating my form and maintaining the styling very similar to the existing flow. I regretfully ran into personal problems last week which delayed my timeline, but I feel I did the best I could in the time that I had.

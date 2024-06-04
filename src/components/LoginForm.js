@@ -5,6 +5,7 @@ import ForgotPasswordPage from "./ForgotPasswordPage";
 import RegistrationForm from "./RegistrationForm";
 import { atom, useAtom } from "jotai";
 
+// Manage state of authentication processes
 const usernameAtom = atom("");
 const passwordAtom = atom("");
 const errorsAtom = atom({});
@@ -23,6 +24,7 @@ const LoginForm = () => {
   const [isForgotPassword, setIsForgotPassword] = useAtom(isForgotPasswordAtom);
   const navigate = useNavigate();
 
+  // Handle bad form inputs
   const validateForm = () => {
     let formErrors = {};
 
@@ -49,17 +51,23 @@ const LoginForm = () => {
         });
         window.location.reload(); // Reload the page after successful login
       } catch (error) {
-        setErrors({
-          form: error.errors
-            ? error.errors[0].message
-            : "Invalid username or password",
-        });
+        if (error.errors) {
+          const errorMessage = error.errors[0].message;
+          if (errorMessage === "No matching username or email address found.") {
+            setErrors({ form: "Invalid username or password" });
+          } else {
+            setErrors({ form: errorMessage });
+          }
+        } else {
+          setErrors({ form: "Invalid username or password" });
+        }
       }
     } else {
       setErrors(formErrors);
     }
   };
 
+  // Prop to pass to Registration page
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     const formErrors = validateForm();
