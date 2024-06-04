@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSignIn, useSignUp } from "@clerk/clerk-react";
 import { useNavigate, Link } from "react-router-dom";
+import ForgotPasswordPage from "./ForgotPasswordPage";
 
 const LoginForm = () => {
   const { signIn } = useSignIn();
@@ -10,6 +11,7 @@ const LoginForm = () => {
   const [errors, setErrors] = useState({});
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
+  const [isForgotPassword, setIsForgotPassword] = useState(false); // New state
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -73,9 +75,17 @@ const LoginForm = () => {
     }
   };
 
+  const handleForgotPasswordClick = () => {
+    setIsForgotPassword(true);
+  };
+
+  const handleBackToLoginClick = () => {
+    setIsForgotPassword(false);
+  };
+
   return (
     <div className="max-w-md mx-auto mt-8 px-4 py-6 bg-white shadow-md rounded-md">
-      {!isRegistering ? (
+      {!isRegistering && !isForgotPassword ? (
         <>
           <h2 className="text-2xl font-semibold mb-4">Login</h2>
           <form onSubmit={handleLoginSubmit}>
@@ -127,7 +137,10 @@ const LoginForm = () => {
             </button>
           </form>
           <div className="mt-2">
-            <Link to="/forgot-password" className="text-sm text-blue-500">
+            <Link
+              onClick={handleForgotPasswordClick}
+              className="text-sm text-blue-500"
+            >
               Forgot Password?
             </Link>
           </div>
@@ -137,6 +150,18 @@ const LoginForm = () => {
               className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
             >
               No account? Register now
+            </button>
+          </div>
+        </>
+      ) : isForgotPassword ? (
+        <>
+          <ForgotPasswordPage />
+          <div className="mt-2">
+            <button
+              onClick={handleBackToLoginClick}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+            >
+              Back to Login
             </button>
           </div>
         </>
