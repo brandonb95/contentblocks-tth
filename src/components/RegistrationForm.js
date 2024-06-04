@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useClerk } from "@clerk/clerk-react";
+import { atom } from "jotai";
 
-const RegistrationForm = ({ setShowRegistration }) => {
+const RegistrationForm = () => {
   const { client } = useClerk();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -134,16 +135,6 @@ const RegistrationForm = ({ setShowRegistration }) => {
           Register
         </button>
       </form>
-
-      {/* Back to login button */}
-      <div className="mt-4 text-center">
-        <button
-          onClick={() => setShowRegistration(false)}
-          className="text-sm text-blue-500 hover:underline"
-        >
-          Back to Login
-        </button>
-      </div>
     </div>
   );
 };

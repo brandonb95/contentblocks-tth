@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSignIn, useSignUp } from "@clerk/clerk-react";
 import { useNavigate, Link } from "react-router-dom";
 import ForgotPasswordPage from "./ForgotPasswordPage";
+import RegistrationForm from "./RegistrationForm";
+import { atom, useAtom } from "jotai";
+
+const usernameAtom = atom("");
+const passwordAtom = atom("");
+const errorsAtom = atom({});
+const isRegisteringAtom = atom(false);
+const emailAtom = atom("");
+const isForgotPasswordAtom = atom(false);
 
 const LoginForm = () => {
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [email, setEmail] = useState("");
-  const [isForgotPassword, setIsForgotPassword] = useState(false); // New state
+  const [username, setUsername] = useAtom(usernameAtom);
+  const [password, setPassword] = useAtom(passwordAtom);
+  const [errors, setErrors] = useAtom(errorsAtom);
+  const [isRegistering, setIsRegistering] = useAtom(isRegisteringAtom);
+  const [email, setEmail] = useAtom(emailAtom);
+  const [isForgotPassword, setIsForgotPassword] = useAtom(isForgotPasswordAtom);
   const navigate = useNavigate();
 
   const validateForm = () => {
@@ -167,75 +176,19 @@ const LoginForm = () => {
         </>
       ) : (
         <>
-          <h2 className="text-2xl font-semibold mb-4">Register</h2>
-          <form onSubmit={handleSignUpSubmit}>
-            <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email:
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
-                  errors.email ? "border-red-500" : ""
-                }`}
-              />
-              {errors.email && (
-                <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Username:
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
-                  errors.username ? "border-red-500" : ""
-                }`}
-              />
-              {errors.username && (
-                <p className="text-sm text-red-500 mt-1">{errors.username}</p>
-              )}
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password:
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
-                  errors.password ? "border-red-500" : ""
-                }`}
-              />
-              {errors.password && (
-                <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-              )}
-            </div>
-            <button
-              type="submit"
-              className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Register
-            </button>
-          </form>
+          <RegistrationForm
+            // Pass props to RegistrationForm component
+            email={email}
+            setEmail={setEmail}
+            username={username}
+            setUsername={setUsername}
+            password={password}
+            setPassword={setPassword}
+            errors={errors}
+            setErrors={setErrors}
+            handleSignUpSubmit={handleSignUpSubmit}
+          />
+
           <div className="mt-2">
             <button
               onClick={() => setIsRegistering(false)}
