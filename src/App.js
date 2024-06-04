@@ -14,7 +14,7 @@ import MagicLinkCallback from "./components/MagicLinkCallback";
 const App = () => {
   return (
     <Router>
-      <div className="App">
+      <div className="App bg-purple-600 w-screen h-screen">
         <header>
           <SignedOut>
             <LoginForm />
