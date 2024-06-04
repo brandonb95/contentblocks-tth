@@ -193,7 +193,7 @@ const LoginForm = () => {
           <div className="mt-2">
             <button
               onClick={() => setIsRegistering(false)}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+              className="mt-12 w-full py-2 px-4 border border-black rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0)] text-sm font-medium text-white bg-purple-600 hover:shadow-[2px_2px_0px_0px_rgba(255,220,0,1)]"
             >
               Back to Login
             </button>

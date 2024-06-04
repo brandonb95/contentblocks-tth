@@ -58,10 +58,9 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 px-4 py-6 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-semibold mb-4">Register</h2>
+    <div>
+      <h1 className="text-3xl font-semibold mb-4 text-center">Register</h1>
       <form onSubmit={handleSubmit}>
-        {/* Email field */}
         <div className="mb-4">
           <label
             htmlFor="email"
@@ -74,7 +73,7 @@ const RegistrationForm = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.email ? "border-red-500" : ""
             }`}
           />
@@ -96,7 +95,7 @@ const RegistrationForm = () => {
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.username ? "border-red-500" : ""
             }`}
           />
@@ -118,7 +117,7 @@ const RegistrationForm = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 ${
+            className={`mt-1 focus:outline-none block w-full rounded-lg border-gray-300 shadow-[1px_1px_0px_0px_rgba(209,213,219)] border rounded-md   border-solid border-2 p-2 hover:border-purple-600 hover:shadow-[1px_1px_0px_0px_rgba(147,51,234)] focus:border-purple-600 focus:shadow-[1px_1px_0px_1px_rgba(147,51,234)] ${
               errors.password ? "border-red-500" : ""
             }`}
           />
@@ -130,7 +129,7 @@ const RegistrationForm = () => {
         {/* Submit button */}
         <button
           type="submit"
-          className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="w-full py-2 px-4 border border-black rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0)] text-sm font-medium text-white bg-purple-600 hover:shadow-[2px_2px_0px_0px_rgba(255,220,0,1)]"
         >
           Register
         </button>
