@@ -20,7 +20,12 @@ const App = () => {
             <LoginForm />
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <div className="max-w-md mx-auto px-8 text-center bg-white border-2 border-black shadow-md rounded-md p-8 translate-y-2/4">
+              <h1 className="text-3xl font-semibold mb-4 text-center">
+                User Profile
+              </h1>
+              <UserButton />
+            </div>
           </SignedIn>
         </header>
         <Routes>
