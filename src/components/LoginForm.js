@@ -96,7 +96,7 @@ const LoginForm = () => {
     <div className="max-w-md mx-auto px-8  bg-white border-2 border-black shadow-md rounded-md p-8 translate-y-2/4">
       {!isRegistering && !isForgotPassword ? (
         <>
-          <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
+          <h1 className="text-3xl font-semibold mb-4 text-center">Login</h1>
           <form onSubmit={handleLoginSubmit}>
             <div className="mb-4">
               <label
@@ -169,7 +169,7 @@ const LoginForm = () => {
           <div className="mt-2">
             <button
               onClick={handleBackToLoginClick}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+              className="w-full mt-12 py-2 px-4 border border-black rounded-md shadow-[2px_2px_0px_0px_rgba(0,0,0)] text-sm font-medium text-white bg-purple-600 hover:shadow-[2px_2px_0px_0px_rgba(255,220,0,1)]"
             >
               Back to Login
             </button>
